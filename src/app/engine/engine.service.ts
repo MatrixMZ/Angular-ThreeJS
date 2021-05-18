@@ -1,6 +1,6 @@
 import { ElementRef, Injectable, NgZone, OnDestroy } from '@angular/core';
-import * as THREE from 'three';
-import { Raycaster } from 'three';
+// import * as THREE from 'three';
+import { Mesh, Raycaster, WebGLRenderer, PerspectiveCamera, Scene, DirectionalLight, Vector2, Color, BoxGeometry, MeshLambertMaterial, Material } from 'three';
 
 
 @Injectable({
@@ -8,15 +8,15 @@ import { Raycaster } from 'three';
 })
 export class EngineService implements OnDestroy {
   private canvas!: HTMLCanvasElement;
-  private renderer!: THREE.WebGLRenderer;
-  private camera!: THREE.PerspectiveCamera;
-  private scene!: THREE.Scene;
+  private renderer!: WebGLRenderer;
+  private camera!: PerspectiveCamera;
+  private scene!: Scene;
   private raycaster!: Raycaster;
-  private light!: THREE.DirectionalLight;
-  private mouse!: THREE.Vector2;
+  private light!: DirectionalLight;
+  private mouse!: Vector2;
 
 
-  private cube!: THREE.Mesh;
+  private cube!: Mesh;
   private frameId?: number;
 
   constructor(private ngZone: NgZone) { }
@@ -30,7 +30,7 @@ export class EngineService implements OnDestroy {
   public createScene(canvas: ElementRef<HTMLCanvasElement>): void {
     this.canvas = canvas.nativeElement;
 
-    this.renderer = new THREE.WebGLRenderer({
+    this.renderer = new WebGLRenderer({
       canvas: this.canvas,
       alpha: true, // transparent background,
       antialias: true // smooth edges 
@@ -38,25 +38,25 @@ export class EngineService implements OnDestroy {
 
     this.renderer.setSize(window.innerWidth, window.innerHeight);
 
-    this.scene = new THREE.Scene();
-    this.scene.background = new THREE.Color(0x000000);
+    this.scene = new Scene();
+    this.scene.background = new Color(0x000000);
 
-    this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    this.camera = new PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
     this.camera.position.z = 5;
     this.scene.add(this.camera);
 
-    this.light = new THREE.DirectionalLight(0xffffff, 0.6);
+    this.light = new DirectionalLight(0xffffff, 0.6);
     this.light.position.z = 10;
     this.scene.add(this.light);
 
-    const geometry = new THREE.BoxGeometry(1, 1, 1);
-    const material = new THREE.MeshLambertMaterial({color: 0xFF8001});
-    this.cube = new THREE.Mesh(geometry, material);
+    const geometry = new BoxGeometry(1, 1, 1);
+    const material = new MeshLambertMaterial({color: 0xFF8001});
+    this.cube = new Mesh(geometry, material);
     // this.cube.
     this.scene.add(this.cube);
 
-    this.mouse = new THREE.Vector2();
-    this.raycaster = new THREE.Raycaster();
+    this.mouse = new Vector2();
+    this.raycaster = new Raycaster();
   }
 
   public animate(): void {
@@ -119,12 +119,21 @@ export class EngineService implements OnDestroy {
     var intersects = this.raycaster.intersectObjects(this.scene.children);
 
     for (var i = 0; i <  intersects.length; i++) {
-      // let x = intersects[i].object.
-      // intersects[i].object.m
+
+      // NOTE: THERE IS A PROBLEM WITH TYPE DEFINITION LIBRARY FOR THREEJS (@Types/three)
+
+      // let x = ((intersects[i].object as Mesh).material as Material).color
+      // console.log(intersects[i]);
+      // ((intersects[i].object as Mesh).material as Material).
+      // let x = intersects[i].object as Mesh;
+      // x.material.
+
+      // console.log(x.material.color.set(0x40f032));
     }
   }
 }
-// Dziwki wóda i lasery
+
+// Dziwki, wóda i lasery
 // Czyli typowa impreza urodzinowa
 
 // Towarzysze! Jak co roku spotykamy się wspólnie aby świętować powiększającą się liczbę dni
