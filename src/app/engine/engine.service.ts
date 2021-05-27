@@ -112,13 +112,17 @@ export class EngineService implements OnDestroy {
 
   public onMouseClick(event: MouseEvent) {
     this.mouse.setX((event.clientX / window.innerHeight) * 2 - 1);
-    this.mouse.setY(- (event.clientY / window.innerHeight) * 2 + 1);
+    this.mouse.setY(-(event.clientY / window.innerHeight) * 2 + 1);
+
+    console.log(this.mouse);
 
     this.raycaster.setFromCamera(this.mouse, this.camera);
 
     var intersects = this.raycaster.intersectObjects(this.scene.children);
 
     for (var i = 0; i <  intersects.length; i++) {
+      // intersects[0].object
+      // console.log(intersects[0]);
 
       // NOTE: THERE IS A PROBLEM WITH TYPE DEFINITION LIBRARY FOR THREEJS (@Types/three)
 
@@ -132,8 +136,3 @@ export class EngineService implements OnDestroy {
     }
   }
 }
-
-// Dziwki, wóda i lasery
-// Czyli typowa impreza urodzinowa
-
-// Towarzysze! Jak co roku spotykamy się wspólnie aby świętować powiększającą się liczbę dni
